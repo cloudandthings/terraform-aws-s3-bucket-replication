@@ -62,53 +62,57 @@ data "aws_iam_policy_document" "replication_role_policy_document" {
     }
   }
 
-  statement {
-    actions = [
-      "kms:Decrypt"
-    ]
-    resources = [var.source_bucket_kms_key_arn]
-
-    condition {
-      test     = "StringLike"
-      variable = "kms:ViaService"
-      values = [
-        "s3.${local.source_region}.amazonaws.com"
+  dynamic "statement" {
+    for_each = var.source_bucket_kms_key_arn != null ? toset([1]) : toset([])
+    content {
+      actions = [
+        "kms:Decrypt"
       ]
-    }
-    condition {
-      test     = "StringLike"
-      variable = "kms:EncryptionContext:aws:s3:arn"
-      values = [
-        # When bucket_key_enabled
-        local.source_bucket_arn,
-        # When NOT bucket_key_enabled
-        "${local.source_bucket_arn}/*"
-      ]
+      resources = [var.source_bucket_kms_key_arn]
+      condition {
+        test     = "StringLike"
+        variable = "kms:ViaService"
+        values = [
+          "s3.${local.source_region}.amazonaws.com"
+        ]
+      }
+      condition {
+        test     = "StringLike"
+        variable = "kms:EncryptionContext:aws:s3:arn"
+        values = [
+          # When bucket_key_enabled
+          local.source_bucket_arn,
+          # When NOT bucket_key_enabled
+          "${local.source_bucket_arn}/*"
+        ]
+      }
     }
   }
 
-  statement {
-    actions = [
-      "kms:Encrypt"
-    ]
-    resources = [var.destination_bucket_kms_key_arn]
-
-    condition {
-      test     = "StringLike"
-      variable = "kms:ViaService"
-      values = [
-        "s3.${local.destination_region}.amazonaws.com"
+  dynamic "statement" {
+    for_each = var.destination_bucket_kms_key_arn != null ? toset([1]) : toset([])
+    content {
+      actions = [
+        "kms:Encrypt"
       ]
-    }
-    condition {
-      test     = "StringLike"
-      variable = "kms:EncryptionContext:aws:s3:arn"
-      values = [
-        # When bucket_key_enabled
-        local.destination_bucket_arn,
-        # When NOT bucket_key_enabled
-        "${local.destination_bucket_arn}/*"
-      ]
+      resources = [var.destination_bucket_kms_key_arn]
+      condition {
+        test     = "StringLike"
+        variable = "kms:ViaService"
+        values = [
+          "s3.${local.destination_region}.amazonaws.com"
+        ]
+      }
+      condition {
+        test     = "StringLike"
+        variable = "kms:EncryptionContext:aws:s3:arn"
+        values = [
+          # When bucket_key_enabled
+          local.destination_bucket_arn,
+          # When NOT bucket_key_enabled
+          "${local.destination_bucket_arn}/*"
+        ]
+      }
     }
   }
 }
