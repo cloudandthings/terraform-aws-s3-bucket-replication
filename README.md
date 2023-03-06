@@ -70,6 +70,7 @@ See [`CONTRIBUTING.md`](./.github/CONTRIBUTING.md) for further information.
 | <a name="input_create_iam_resources"></a> [create\_iam\_resources](#input\_create\_iam\_resources) | Whether to create IAM resources. | `bool` | `true` | no |
 | <a name="input_destination_bucket_kms_key_arn"></a> [destination\_bucket\_kms\_key\_arn](#input\_destination\_bucket\_kms\_key\_arn) | Destination S3 bucket KMS Key ARN | `string` | `null` | no |
 | <a name="input_destination_bucket_name"></a> [destination\_bucket\_name](#input\_destination\_bucket\_name) | Destination S3 bucket name | `string` | n/a | yes |
+| <a name="input_destination_bucket_region"></a> [destination\_bucket\_region](#input\_destination\_bucket\_region) | Destination S3 bucket region. If unspecified, then the provider region is used. | `string` | `null` | no |
 | <a name="input_enable_delete_marker_replication"></a> [enable\_delete\_marker\_replication](#input\_enable\_delete\_marker\_replication) | Whether delete markers are replicated. | `bool` | `true` | no |
 | <a name="input_enable_object_owner_override"></a> [enable\_object\_owner\_override](#input\_enable\_object\_owner\_override) | Whether to change replica object ownership to the destination account. Use when enabling cross-account replication. | `bool` | `false` | no |
 | <a name="input_enable_replication_time_control_and_metrics"></a> [enable\_replication\_time\_control\_and\_metrics](#input\_enable\_replication\_time\_control\_and\_metrics) | Whether to enable S3 Replication Time Control (S3 RTC) and Replication Metrics. | `bool` | `false` | no |
@@ -78,6 +79,7 @@ See [`CONTRIBUTING.md`](./.github/CONTRIBUTING.md) for further information.
 | <a name="input_replication_role_arn"></a> [replication\_role\_arn](#input\_replication\_role\_arn) | IAM Role ARN for replication role. | `string` | `null` | no |
 | <a name="input_source_bucket_kms_key_arn"></a> [source\_bucket\_kms\_key\_arn](#input\_source\_bucket\_kms\_key\_arn) | Source S3 bucket KMS Key ARN | `string` | `null` | no |
 | <a name="input_source_bucket_name"></a> [source\_bucket\_name](#input\_source\_bucket\_name) | Source S3 bucket name | `string` | n/a | yes |
+| <a name="input_source_bucket_region"></a> [source\_bucket\_region](#input\_source\_bucket\_region) | Source S3 bucket region. If unspecified, then the provider region is used. | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Map of additional tags to assign to created resources. If configured with a provider `default_tags` configuration block present, tags with matching keys will overwrite those defined at the provider-level. | `map(string)` | n/a | yes |
 
 ----
@@ -96,8 +98,6 @@ No outputs.
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 4.9 |
-| <a name="provider_aws.destination"></a> [aws.destination](#provider\_aws.destination) | ~> 4.9 |
-| <a name="provider_aws.source"></a> [aws.source](#provider\_aws.source) | ~> 4.9 |
 
 ----
 ### Requirements
@@ -118,8 +118,7 @@ No outputs.
 | [aws_s3_bucket_replication_configuration.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_replication_configuration) | resource |
 | [aws_iam_policy_document.replication_role_assume_role_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.replication_role_policy_document](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_region.destination](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
-| [aws_region.source](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ----
 <!-- END_TF_DOCS -->

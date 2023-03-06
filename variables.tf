@@ -24,6 +24,12 @@ variable "source_bucket_kms_key_arn" {
   default     = null
 }
 
+variable "source_bucket_region" {
+  description = "Source S3 bucket region. If unspecified, then the provider region is used."
+  type        = string
+  default     = null
+}
+
 variable "destination_bucket_name" {
   description = "Destination S3 bucket name"
   type        = string
@@ -31,6 +37,12 @@ variable "destination_bucket_name" {
 
 variable "destination_bucket_kms_key_arn" {
   description = "Destination S3 bucket KMS Key ARN"
+  type        = string
+  default     = null
+}
+
+variable "destination_bucket_region" {
+  description = "Destination S3 bucket region. If unspecified, then the provider region is used."
   type        = string
   default     = null
 }
