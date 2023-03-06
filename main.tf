@@ -11,9 +11,9 @@ locals {
 ## IAM
 ######################################################################
 resource "aws_iam_role" "this" {
-  count = var.create_source_resources ? 1 : 0
+  count = var.create_iam_resources ? 1 : 0
 
-  name               = var.naming_prefix_role
+  name               = var.name_for_created_iam_resources
   assume_role_policy = data.aws_iam_policy_document.replication_role_assume_role_policy.json
 
   permissions_boundary = var.aws_iam_role_permissions_boundary
@@ -22,26 +22,28 @@ resource "aws_iam_role" "this" {
 }
 
 resource "aws_iam_policy" "this" {
-  count = var.create_source_resources ? 1 : 0
+  count = var.create_iam_resources ? 1 : 0
 
-  name   = var.naming_prefix_role
+  name   = var.name_for_created_iam_resources
   policy = data.aws_iam_policy_document.replication_role_policy_document.json
 }
 
 resource "aws_iam_role_policy_attachment" "this" {
-  count = var.create_source_resources ? 1 : 0
+  count = var.create_iam_resources ? 1 : 0
 
   role       = aws_iam_role.this[0].name
   policy_arn = aws_iam_policy.this[0].arn
 }
 
+locals {
+  replication_role_arn = try(aws_iam_role.this[0].arn, var.replication_role_arn)
+}
+
 ## Bucket Replication Configuration
 resource "aws_s3_bucket_replication_configuration" "this" {
-  count = var.create_source_resources ? 1 : 0
-
   # Must have bucket versioning enabled first
 
-  role   = aws_iam_role.this[0].arn
+  role   = local.replication_role_arn
   bucket = var.source_bucket_name
 
   rule {

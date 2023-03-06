@@ -75,7 +75,7 @@ module "example" {
   # version = "~> 1.0"
   source = "../../"
 
-  naming_prefix_role = local.naming_prefix
+  name_for_created_iam_resources = local.naming_prefix
 
   source_bucket_name      = module.s3_bucket_source.bucket
   destination_bucket_name = module.s3_bucket_destination.bucket
