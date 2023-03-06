@@ -1,0 +1,17 @@
+# https://levelup.gitconnected.com/semantic-versioning-and-release-automation-on-gitlab-9ba16af0c21
+# https://gitlab.com/to-be-continuous/semantic-release/-/blob/master/templates/gitlab-ci-semrel.yml
+plugins:
+  - "@semantic-release/commit-analyzer"
+  - "@semantic-release/release-notes-generator"
+  - - "@semantic-release/gitlab"
+  - - "@semantic-release/changelog"
+    - changelogFile: CHANGELOG.md
+  - - '@semantic-release/git'
+    - assets:
+      - 'CHANGELOG.md'
+
+branches:
+  - "main"
+  - "+([0-9])?(.{+([0-9]),x}).x"
+  - name: "alpha"
+    prerelease: "alpha"
