@@ -68,11 +68,11 @@ See [`CONTRIBUTING.md`](./.github/CONTRIBUTING.md) for further information.
 |------|-------------|------|---------|:--------:|
 | <a name="input_aws_iam_role_permissions_boundary"></a> [aws\_iam\_role\_permissions\_boundary](#input\_aws\_iam\_role\_permissions\_boundary) | AWS IAM Role permissions boundary. | `string` | `null` | no |
 | <a name="input_create_iam_resources"></a> [create\_iam\_resources](#input\_create\_iam\_resources) | Whether to create IAM resources. | `bool` | `true` | no |
+| <a name="input_destination_aws_account_id"></a> [destination\_aws\_account\_id](#input\_destination\_aws\_account\_id) | Destination AWS Account ID. Only use for cross-account replication. When specified, replica object ownership will be set to this account. | `string` | `null` | no |
 | <a name="input_destination_bucket_kms_key_arn"></a> [destination\_bucket\_kms\_key\_arn](#input\_destination\_bucket\_kms\_key\_arn) | Destination S3 bucket KMS Key ARN | `string` | `null` | no |
 | <a name="input_destination_bucket_name"></a> [destination\_bucket\_name](#input\_destination\_bucket\_name) | Destination S3 bucket name | `string` | n/a | yes |
 | <a name="input_destination_bucket_region"></a> [destination\_bucket\_region](#input\_destination\_bucket\_region) | Destination S3 bucket region. If unspecified, then the provider region is used. | `string` | `null` | no |
 | <a name="input_enable_delete_marker_replication"></a> [enable\_delete\_marker\_replication](#input\_enable\_delete\_marker\_replication) | Whether delete markers are replicated. | `bool` | `true` | no |
-| <a name="input_enable_object_owner_override"></a> [enable\_object\_owner\_override](#input\_enable\_object\_owner\_override) | Whether to change replica object ownership to the destination account. Use when enabling cross-account replication. | `bool` | `false` | no |
 | <a name="input_enable_replication_time_control_and_metrics"></a> [enable\_replication\_time\_control\_and\_metrics](#input\_enable\_replication\_time\_control\_and\_metrics) | Whether to enable S3 Replication Time Control (S3 RTC) and Replication Metrics. | `bool` | `false` | no |
 | <a name="input_name_for_created_iam_resources"></a> [name\_for\_created\_iam\_resources](#input\_name\_for\_created\_iam\_resources) | Name for created IAM resources. | `string` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | S3 bucket prefix to replicate. | `string` | `""` | no |

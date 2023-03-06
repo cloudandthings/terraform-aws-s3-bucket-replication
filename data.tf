@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "replication_role_policy_document" {
   }
 
   dynamic "statement" {
-    for_each = var.enable_object_owner_override ? toset([1]) : toset([])
+    for_each = var.destination_aws_account_id != null ? toset([1]) : toset([])
     content {
       actions   = ["s3:ObjectOwnerOverrideToBucketOwner"]
       resources = ["${local.destination_bucket_arn}/*"]
@@ -146,7 +146,7 @@ data "aws_iam_policy_document" "destination_bucket_policy" {
   }
 
   dynamic "statement" {
-    for_each = var.enable_object_owner_override ? toset([1]) : toset([])
+    for_each = var.destination_aws_account_id != null ? toset([1]) : toset([])
     content {
       principals {
         type        = "AWS"

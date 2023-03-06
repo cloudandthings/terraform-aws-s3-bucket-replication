@@ -87,4 +87,7 @@ module "example" {
 
   tags = {}
 
+  depends_on = [
+    module.s3_bucket_source, module.s3_bucket_destination
+  ]
 }

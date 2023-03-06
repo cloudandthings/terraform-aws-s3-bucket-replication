@@ -84,4 +84,7 @@ module "example" {
   destination_bucket_kms_key_arn = aws_kms_key.destination.arn
 
   tags = {}
+  depends_on = [
+    module.s3_bucket_source, module.s3_bucket_destination
+  ]
 }

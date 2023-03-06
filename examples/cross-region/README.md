@@ -91,6 +91,9 @@ module "example" {
 
   tags = {}
 
+  depends_on = [
+    module.s3_bucket_source, module.s3_bucket_destination
+  ]
 }
 ```
 ----
@@ -102,7 +105,7 @@ module "example" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_profile"></a> [profile](#input\_profile) | AWS profile | `string` | n/a | yes |
+| <a name="input_profile"></a> [profile](#input\_profile) | AWS profile | `string` | `null` | no |
 
 ----
 ### Modules

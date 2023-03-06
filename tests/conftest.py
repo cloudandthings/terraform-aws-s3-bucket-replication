@@ -84,7 +84,7 @@ def _get_tf(test_name, variables=None):
     variables = variables or {}
     with open(os.path.join(basedir, tfdir, "test.auto.tfvars.json"), "w") as f:
         json.dump(variables, f)
-    tf.setup()
+    tf.setup(input=False)
     return tf
 
 
