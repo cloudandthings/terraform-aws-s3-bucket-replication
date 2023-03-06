@@ -64,6 +64,14 @@ resource "aws_s3_bucket_replication_configuration" "this" {
         }
       }
 
+      dynamic "access_control_translation" {
+        for_each = var.destination_aws_account_id != null ? toset([1]) : toset([])
+        content {
+          owner = "Destination"
+        }
+      }
+      account = var.destination_aws_account_id
+
       replication_time {
         status = var.enable_replication_time_control_and_metrics ? "Enabled" : "Disabled"
         time {

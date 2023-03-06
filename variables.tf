@@ -47,6 +47,12 @@ variable "destination_bucket_region" {
   default     = null
 }
 
+variable "destination_aws_account_id" {
+  description = "Destination AWS Account ID. Only use for cross-account replication. When specified, replica object ownership will be set to this account."
+  type        = string
+  default     = null
+}
+
 variable "tags" {
   description = "Map of additional tags to assign to created resources. If configured with a provider `default_tags` configuration block present, tags with matching keys will overwrite those defined at the provider-level."
   type        = map(string)
@@ -85,12 +91,6 @@ variable "enable_replication_time_control_and_metrics" {
 
   type    = bool
   default = false
-}
-
-variable "enable_object_owner_override" {
-  description = "Whether to change replica object ownership to the destination account. Use when enabling cross-account replication."
-  type        = bool
-  default     = false
 }
 
 /*
