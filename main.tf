@@ -84,23 +84,22 @@ resource "aws_s3_bucket_replication_configuration" "this" {
           minutes = 15
         }
       }
-
-    }
-
-    delete_marker_replication {
-      status = var.enable_delete_marker_replication ? "Enabled" : "Disabled"
     }
 
     dynamic "source_selection_criteria" {
       for_each = var.source_bucket_kms_key_arn != null ? toset([1]) : toset([])
       content {
         sse_kms_encrypted_objects {
-          content {
-            status = "Enabled"
-          }
+          status = "Enabled"
         }
       }
     }
+
+    delete_marker_replication {
+      status = var.enable_delete_marker_replication ? "Enabled" : "Disabled"
+    }
+
+
 
   }
 }
