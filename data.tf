@@ -1,13 +1,7 @@
 #--------------------------------------------------------------------------------------
 # Regions
 #--------------------------------------------------------------------------------------
-data "aws_region" "source" {
-  provider = aws.source
-}
-
-data "aws_region" "destination" {
-  provider = aws.destination
-}
+data "aws_region" "current" {}
 
 #--------------------------------------------------------------------------------------
 # Replication role policy documents

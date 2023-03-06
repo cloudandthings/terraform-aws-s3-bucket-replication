@@ -1,7 +1,7 @@
 
 locals {
-  source_region      = data.aws_region.source.name
-  destination_region = data.aws_region.destination.name
+  source_region      = coalesce(var.source_bucket_region, data.aws_region.current.name)
+  destination_region = coalesce(var.destination_bucket_region, data.aws_region.current.name)
 
   source_bucket_arn      = "arn:aws:s3:::${var.source_bucket_name}"
   destination_bucket_arn = "arn:aws:s3:::${var.destination_bucket_name}"
