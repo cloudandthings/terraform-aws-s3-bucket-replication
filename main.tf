@@ -1,7 +1,7 @@
 
 locals {
-  source_region      = data.aws_region.source.name
-  destination_region = data.aws_region.destination.name
+  source_region      = coalesce(var.source_bucket_region, data.aws_region.current.name)
+  destination_region = coalesce(var.destination_bucket_region, data.aws_region.current.name)
 
   source_bucket_arn      = "arn:aws:s3:::${var.source_bucket_name}"
   destination_bucket_arn = "arn:aws:s3:::${var.destination_bucket_name}"
@@ -11,9 +11,9 @@ locals {
 ## IAM
 ######################################################################
 resource "aws_iam_role" "this" {
-  count = var.create_source_resources ? 1 : 0
+  count = var.create_iam_resources ? 1 : 0
 
-  name               = var.naming_prefix_role
+  name               = var.name_for_created_iam_resources
   assume_role_policy = data.aws_iam_policy_document.replication_role_assume_role_policy.json
 
   permissions_boundary = var.aws_iam_role_permissions_boundary
@@ -22,26 +22,28 @@ resource "aws_iam_role" "this" {
 }
 
 resource "aws_iam_policy" "this" {
-  count = var.create_source_resources ? 1 : 0
+  count = var.create_iam_resources ? 1 : 0
 
-  name   = var.naming_prefix_role
+  name   = var.name_for_created_iam_resources
   policy = data.aws_iam_policy_document.replication_role_policy_document.json
 }
 
 resource "aws_iam_role_policy_attachment" "this" {
-  count = var.create_source_resources ? 1 : 0
+  count = var.create_iam_resources ? 1 : 0
 
   role       = aws_iam_role.this[0].name
   policy_arn = aws_iam_policy.this[0].arn
 }
 
+locals {
+  replication_role_arn = try(aws_iam_role.this[0].arn, var.replication_role_arn)
+}
+
 ## Bucket Replication Configuration
 resource "aws_s3_bucket_replication_configuration" "this" {
-  count = var.create_source_resources ? 1 : 0
-
   # Must have bucket versioning enabled first
 
-  role   = aws_iam_role.this[0].arn
+  role   = local.replication_role_arn
   bucket = var.source_bucket_name
 
   rule {
@@ -62,6 +64,14 @@ resource "aws_s3_bucket_replication_configuration" "this" {
         }
       }
 
+      dynamic "access_control_translation" {
+        for_each = var.destination_aws_account_id != null ? toset([1]) : toset([])
+        content {
+          owner = "Destination"
+        }
+      }
+      account = var.destination_aws_account_id
+
       replication_time {
         status = var.enable_replication_time_control_and_metrics ? "Enabled" : "Disabled"
         time {
@@ -74,20 +84,22 @@ resource "aws_s3_bucket_replication_configuration" "this" {
           minutes = 15
         }
       }
+    }
 
+    dynamic "source_selection_criteria" {
+      for_each = var.source_bucket_kms_key_arn != null ? toset([1]) : toset([])
+      content {
+        sse_kms_encrypted_objects {
+          status = "Enabled"
+        }
+      }
     }
 
     delete_marker_replication {
       status = var.enable_delete_marker_replication ? "Enabled" : "Disabled"
     }
 
-    source_selection_criteria {
-      dynamic "sse_kms_encrypted_objects" {
-        for_each = var.source_bucket_kms_key_arn != null ? toset([1]) : toset([])
-        content {
-          status = "Enabled"
-        }
-      }
-    }
+
+
   }
 }

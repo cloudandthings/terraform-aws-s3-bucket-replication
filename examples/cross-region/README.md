@@ -78,19 +78,22 @@ module "example" {
   # version = "~> 1.0"
   source = "../../"
 
-  naming_prefix_role = local.naming_prefix
+  name_for_created_iam_resources = local.naming_prefix
 
-  source_bucket_name      = module.s3_bucket_source.bucket
-  destination_bucket_name = module.s3_bucket_destination.bucket
+  source_bucket_name        = module.s3_bucket_source.bucket
+  source_bucket_kms_key_arn = aws_kms_key.source.arn
+
+  destination_bucket_name        = module.s3_bucket_destination.bucket
+  destination_bucket_kms_key_arn = aws_kms_key.destination.arn
+  destination_bucket_region      = "eu-west-1"
 
   enable_replication_time_control_and_metrics = true
 
   tags = {}
 
-  providers = {
-    aws.source      = aws.afs1
-    aws.destination = aws.euw1
-  }
+  depends_on = [
+    module.s3_bucket_source, module.s3_bucket_destination
+  ]
 }
 ```
 ----
@@ -102,7 +105,7 @@ module "example" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_profile"></a> [profile](#input\_profile) | AWS profile | `string` | n/a | yes |
+| <a name="input_profile"></a> [profile](#input\_profile) | AWS profile | `string` | `null` | no |
 
 ----
 ### Modules

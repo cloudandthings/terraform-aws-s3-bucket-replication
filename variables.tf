@@ -2,9 +2,9 @@
 ## Required
 ######################################################################
 
-variable "naming_prefix_role" {
+variable "name_for_created_iam_resources" {
   type        = string
-  description = "Naming prefix for replication role."
+  description = "Name for created IAM resources."
 }
 
 variable "aws_iam_role_permissions_boundary" {
@@ -24,6 +24,12 @@ variable "source_bucket_kms_key_arn" {
   default     = null
 }
 
+variable "source_bucket_region" {
+  description = "Source S3 bucket region. If unspecified, then the provider region is used."
+  type        = string
+  default     = null
+}
+
 variable "destination_bucket_name" {
   description = "Destination S3 bucket name"
   type        = string
@@ -31,6 +37,18 @@ variable "destination_bucket_name" {
 
 variable "destination_bucket_kms_key_arn" {
   description = "Destination S3 bucket KMS Key ARN"
+  type        = string
+  default     = null
+}
+
+variable "destination_bucket_region" {
+  description = "Destination S3 bucket region. If unspecified, then the provider region is used."
+  type        = string
+  default     = null
+}
+
+variable "destination_aws_account_id" {
+  description = "Destination AWS Account ID. Only use for cross-account replication. When specified, replica object ownership will be set to this account."
   type        = string
   default     = null
 }
@@ -43,6 +61,18 @@ variable "tags" {
 ######################################################################
 ## Optional
 ######################################################################
+
+variable "create_iam_resources" {
+  description = "Whether to create IAM resources."
+  type        = bool
+  default     = true
+}
+
+variable "replication_role_arn" {
+  description = "IAM Role ARN for replication role."
+  type        = string
+  default     = null
+}
 
 variable "prefix" {
   description = "S3 bucket prefix to replicate."
@@ -63,20 +93,10 @@ variable "enable_replication_time_control_and_metrics" {
   default = false
 }
 
-variable "create_source_resources" {
-  description = "Whether to create source resources. Use when enabling cross-account replication"
-  type        = bool
-  default     = true
-}
-
+/*
 variable "create_destination_resources" {
   description = "Whether to create destination resources. Use when enabling cross-account replication."
   type        = bool
   default     = false
 }
-
-variable "enable_object_owner_override" {
-  description = "Whether to change replica object ownership to the destination account. Use when enabling cross-account replication."
-  type        = bool
-  default     = false
-}
+*/

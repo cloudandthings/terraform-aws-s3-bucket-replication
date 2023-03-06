@@ -4,9 +4,6 @@ terraform {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 4.9"
-      configuration_aliases = [
-        aws.source, aws.destination
-      ]
     }
   }
 }

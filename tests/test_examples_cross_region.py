@@ -18,17 +18,17 @@ def output():
     yield from terraform_apply_and_output(__name__)
 
 
-def test_s3_replication_creation(profile, output):
-    source_bucket_name = output["module_s3_bucket_source"]["bucket_name"]
+def test_s3_replication_creation(output):
+    source_bucket_name = output["module_s3_bucket_source"]["bucket"]
     source_bucket_region = output["module_s3_bucket_source"]["region"]
-    destination_bucket_name = output["module_s3_bucket_destination"]["bucket_name"]
+    destination_bucket_name = output["module_s3_bucket_destination"]["bucket"]
     destination_bucket_region = output["module_s3_bucket_destination"]["region"]
     assert source_bucket_region != destination_bucket_region
     time.sleep(10)
 
-    session = boto3.Session(profile_name=profile)
-    s3_src = session.client("s3", region_name="af-south-1")
-    s3_dest = session.client("s3", region_name="eu-west-1")
+    session = boto3.Session()
+    s3_src = session.client("s3", region_name=source_bucket_region)
+    s3_dest = session.client("s3", region_name=destination_bucket_region)
 
     key = "test_replication"
     # Write an object to the source bucket

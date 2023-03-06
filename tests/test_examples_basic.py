@@ -16,14 +16,14 @@ def output():
     yield from terraform_apply_and_output(__name__)
 
 
-def test_s3_replication_creation(profile, output):
-    source_bucket_name = output["module_s3_bucket_source"]["bucket_name"]
+def test_s3_replication_creation(output):
+    source_bucket_name = output["module_s3_bucket_source"]["bucket"]
     source_bucket_region = output["module_s3_bucket_source"]["region"]
-    destination_bucket_name = output["module_s3_bucket_destination"]["bucket_name"]
+    destination_bucket_name = output["module_s3_bucket_destination"]["bucket"]
     destination_bucket_region = output["module_s3_bucket_source"]["region"]
     assert source_bucket_region == destination_bucket_region
 
-    session = boto3.Session(profile_name=profile, region_name="af-south-1")
+    session = boto3.Session(region_name=source_bucket_region)
     s3 = session.client("s3")
 
     key = "test_replication"
