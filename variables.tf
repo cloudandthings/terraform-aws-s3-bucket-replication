@@ -2,9 +2,9 @@
 ## Required
 ######################################################################
 
-variable "naming_prefix_role" {
+variable "name_for_created_iam_resources" {
   type        = string
-  description = "Naming prefix for replication role."
+  description = "Name for created IAM resources."
 }
 
 variable "aws_iam_role_permissions_boundary" {
@@ -44,6 +44,18 @@ variable "tags" {
 ## Optional
 ######################################################################
 
+variable "create_iam_resources" {
+  description = "Whether to create IAM resources."
+  type        = bool
+  default     = true
+}
+
+variable "replication_role_arn" {
+  description = "IAM Role ARN for replication role."
+  type        = string
+  default     = null
+}
+
 variable "prefix" {
   description = "S3 bucket prefix to replicate."
   type        = string
@@ -63,20 +75,16 @@ variable "enable_replication_time_control_and_metrics" {
   default = false
 }
 
-variable "create_source_resources" {
-  description = "Whether to create source resources. Use when enabling cross-account replication"
-  type        = bool
-  default     = true
-}
-
-variable "create_destination_resources" {
-  description = "Whether to create destination resources. Use when enabling cross-account replication."
-  type        = bool
-  default     = false
-}
-
 variable "enable_object_owner_override" {
   description = "Whether to change replica object ownership to the destination account. Use when enabling cross-account replication."
   type        = bool
   default     = false
 }
+
+/*
+variable "create_destination_resources" {
+  description = "Whether to create destination resources. Use when enabling cross-account replication."
+  type        = bool
+  default     = false
+}
+*/
