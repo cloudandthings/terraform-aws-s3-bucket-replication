@@ -80,10 +80,17 @@ module "example" {
   source_bucket_name        = module.s3_bucket_source.bucket
   source_bucket_kms_key_arn = aws_kms_key.source.arn
 
-  destination_bucket_name        = module.s3_bucket_destination.bucket
-  destination_bucket_kms_key_arn = aws_kms_key.destination.arn
+  replication_configuration = [
+    {
+      destination_bucket_name        = module.s3_bucket_destination.bucket
+      destination_bucket_kms_key_arn = aws_kms_key.destination.arn
+
+      enable_replication_time_control_and_metrics = true
+    }
+  ]
 
   tags = {}
+
   depends_on = [
     module.s3_bucket_source, module.s3_bucket_destination
   ]

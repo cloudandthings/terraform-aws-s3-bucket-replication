@@ -25,7 +25,7 @@ module "s3_bucket_source" {
   # version = "1.2.0"
   source = "../../modules/external/s3_bucket"
 
-  name       = "${local.naming_prefix}-afs1-source"
+  name       = "${local.naming_prefix}-source"
   kms_key_id = aws_kms_key.source.arn
 
   enable_versioning = true # Required for replication
@@ -44,15 +44,16 @@ resource "aws_kms_key" "destination" {
   deletion_window_in_days = 7
   enable_key_rotation     = true
 
-  provider = aws.euw1
+  provider = aws.afs1
 }
 
-module "s3_bucket_destination" {
+module "s3_bucket_destinations" {
+  count = 2
   # source  = "app.terraform.io/cloudandthings/s3-bucket/aws"
   # version = "1.2.0"
   source = "../../modules/external/s3_bucket"
 
-  name       = "${local.naming_prefix}-euw1-dest"
+  name       = "${local.naming_prefix}-dest-${count.index}"
   kms_key_id = aws_kms_key.destination.arn
 
   enable_versioning = true # Required for replication
@@ -61,14 +62,16 @@ module "s3_bucket_destination" {
   tags = {}
 
   providers = {
-    aws = aws.euw1
+    aws = aws.afs1
   }
 }
 
 #--------------------------------------------------------------------------------------
 # Example
 #--------------------------------------------------------------------------------------
+
 module "example" {
+
   # Uncomment and update as needed
   # source  = "app.terraform.io/cloudandthings/s3-bucket-replication/aws"
   # version = "~> 1.0"
@@ -80,10 +83,10 @@ module "example" {
   source_bucket_kms_key_arn = aws_kms_key.source.arn
 
   replication_configuration = [
+    for s3_bucket_destination in module.s3_bucket_destinations :
     {
-      destination_bucket_name        = module.s3_bucket_destination.bucket
+      destination_bucket_name        = s3_bucket_destination.bucket
       destination_bucket_kms_key_arn = aws_kms_key.destination.arn
-      destination_bucket_region      = "eu-west-1"
 
       enable_replication_time_control_and_metrics = true
     }
@@ -92,6 +95,6 @@ module "example" {
   tags = {}
 
   depends_on = [
-    module.s3_bucket_source, module.s3_bucket_destination
+    module.s3_bucket_source, module.s3_bucket_destinations
   ]
 }
