@@ -19,9 +19,6 @@ def output():
 def test_s3_replication_creation(output):
     source_bucket_name = output["module_s3_bucket_source"]["bucket"]
     source_bucket_region = output["module_s3_bucket_source"]["region"]
-    destination_bucket_name = output["module_s3_bucket_destination"]["bucket"]
-    destination_bucket_region = output["module_s3_bucket_destination"]["region"]
-    assert source_bucket_region == destination_bucket_region
 
     session = boto3.Session(region_name=source_bucket_region)
     s3 = session.client("s3")
@@ -54,6 +51,11 @@ def test_s3_replication_creation(output):
     # Ensure object exists in destination bucket
     time.sleep(10)  # Replication is flaky, give it a few seconds
 
-    response = s3.get_object(Bucket=destination_bucket_name, Key=key)
-    destination_replication_status = response.get("ReplicationStatus", "NONE")
-    assert "REPLICA" == destination_replication_status
+    for destination_bucket in output["module_s3_bucket_destinations"]:
+        destination_bucket_name = destination_bucket["bucket"]
+        destination_bucket_region = destination_bucket["region"]
+        assert source_bucket_region == destination_bucket_region
+
+        response = s3.get_object(Bucket=destination_bucket_name, Key=key)
+        destination_replication_status = response.get("ReplicationStatus", "NONE")
+        assert "REPLICA" == destination_replication_status

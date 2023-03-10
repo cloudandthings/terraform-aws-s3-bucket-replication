@@ -30,27 +30,31 @@ variable "source_bucket_region" {
   default     = null
 }
 
-variable "destination_bucket_name" {
-  description = "Destination S3 bucket name"
-  type        = string
-}
+variable "replication_configuration" {
+  description = "Replication configuration, in priority order. See the comments in `variables.tf` for usage."
+  type = list(object({
 
-variable "destination_bucket_kms_key_arn" {
-  description = "Destination S3 bucket KMS Key ARN"
-  type        = string
-  default     = null
-}
+    destination_bucket_name = string
 
-variable "destination_bucket_region" {
-  description = "Destination S3 bucket region. If unspecified, then the provider region is used."
-  type        = string
-  default     = null
-}
+    # S3 bucket prefix to replicate.
+    prefix = optional(string, "")
 
-variable "destination_aws_account_id" {
-  description = "Destination AWS Account ID. Only use for cross-account replication. When specified, replica object ownership will be set to this account."
-  type        = string
-  default     = null
+    # Destination S3 bucket KMS Key ARN if applicable.
+    destination_bucket_kms_key_arn = optional(string, null)
+
+    # Destination AWS Account ID. Only use for cross-account replication. When specified, replica object ownership will be set to this account.
+    destination_aws_account_id = optional(string, null)
+
+    # Destination S3 bucket region. If unspecified, then the provider region is used.
+    destination_bucket_region = optional(string, null)
+
+    # Whether delete markers are replicated.
+    enable_delete_marker_replication = optional(bool, true)
+
+    # Whether to enable S3 Replication Time Control (S3 RTC) and Replication Metrics.
+    enable_replication_time_control_and_metrics = optional(bool, false)
+    })
+  )
 }
 
 variable "tags" {
@@ -73,30 +77,3 @@ variable "replication_role_arn" {
   type        = string
   default     = null
 }
-
-variable "prefix" {
-  description = "S3 bucket prefix to replicate."
-  type        = string
-  default     = ""
-}
-
-variable "enable_delete_marker_replication" {
-  description = "Whether delete markers are replicated."
-  type        = bool
-  default     = true
-}
-
-variable "enable_replication_time_control_and_metrics" {
-  description = "Whether to enable S3 Replication Time Control (S3 RTC) and Replication Metrics."
-
-  type    = bool
-  default = false
-}
-
-/*
-variable "create_destination_resources" {
-  description = "Whether to create destination resources. Use when enabling cross-account replication."
-  type        = bool
-  default     = false
-}
-*/

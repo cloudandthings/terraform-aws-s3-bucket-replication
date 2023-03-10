@@ -1,10 +1,7 @@
 
 locals {
-  source_region      = coalesce(var.source_bucket_region, data.aws_region.current.name)
-  destination_region = coalesce(var.destination_bucket_region, data.aws_region.current.name)
-
-  source_bucket_arn      = "arn:aws:s3:::${var.source_bucket_name}"
-  destination_bucket_arn = "arn:aws:s3:::${var.destination_bucket_name}"
+  source_region     = coalesce(var.source_bucket_region, data.aws_region.current.name)
+  source_bucket_arn = "arn:aws:s3:::${var.source_bucket_name}"
 }
 
 ######################################################################
@@ -46,60 +43,67 @@ resource "aws_s3_bucket_replication_configuration" "this" {
   role   = local.replication_role_arn
   bucket = var.source_bucket_name
 
-  rule {
-    id = "replication"
-
-    filter {
-      prefix = var.prefix
+  dynamic "rule" {
+    for_each = {
+      for c in var.replication_configuration :
+      index(var.replication_configuration, c) => c
     }
-    status = "Enabled"
 
-    destination {
-      bucket = local.destination_bucket_arn
-      # storage_class = "STANDARD"
-      dynamic "encryption_configuration" {
+    content {
+      id       = "rule-${rule.key}"
+      priority = rule.key
+
+      filter {
+        prefix = rule.value.prefix
+      }
+      status = "Enabled"
+
+      destination {
+        # TODO
+        bucket = "arn:aws:s3:::${rule.value.destination_bucket_name}"
+        # storage_class = "STANDARD"
+        dynamic "encryption_configuration" {
+          for_each = var.source_bucket_kms_key_arn != null ? toset([1]) : toset([])
+          content {
+            replica_kms_key_id = rule.value.destination_bucket_kms_key_arn
+          }
+        }
+
+        dynamic "access_control_translation" {
+          for_each = rule.value.destination_aws_account_id != null ? toset([1]) : toset([])
+          content {
+            owner = "Destination"
+          }
+        }
+        account = rule.value.destination_aws_account_id
+
+        replication_time {
+          status = rule.value.enable_replication_time_control_and_metrics ? "Enabled" : "Disabled"
+          time {
+            minutes = 15
+          }
+        }
+        metrics {
+          status = rule.value.enable_replication_time_control_and_metrics ? "Enabled" : "Disabled"
+          event_threshold {
+            minutes = 15
+          }
+        }
+      }
+
+      dynamic "source_selection_criteria" {
         for_each = var.source_bucket_kms_key_arn != null ? toset([1]) : toset([])
         content {
-          replica_kms_key_id = var.destination_bucket_kms_key_arn
+          sse_kms_encrypted_objects {
+            status = "Enabled"
+          }
         }
       }
 
-      dynamic "access_control_translation" {
-        for_each = var.destination_aws_account_id != null ? toset([1]) : toset([])
-        content {
-          owner = "Destination"
-        }
+      delete_marker_replication {
+        status = rule.value.enable_delete_marker_replication ? "Enabled" : "Disabled"
       }
-      account = var.destination_aws_account_id
 
-      replication_time {
-        status = var.enable_replication_time_control_and_metrics ? "Enabled" : "Disabled"
-        time {
-          minutes = 15
-        }
-      }
-      metrics {
-        status = var.enable_replication_time_control_and_metrics ? "Enabled" : "Disabled"
-        event_threshold {
-          minutes = 15
-        }
-      }
     }
-
-    dynamic "source_selection_criteria" {
-      for_each = var.source_bucket_kms_key_arn != null ? toset([1]) : toset([])
-      content {
-        sse_kms_encrypted_objects {
-          status = "Enabled"
-        }
-      }
-    }
-
-    delete_marker_replication {
-      status = var.enable_delete_marker_replication ? "Enabled" : "Disabled"
-    }
-
-
-
   }
 }
