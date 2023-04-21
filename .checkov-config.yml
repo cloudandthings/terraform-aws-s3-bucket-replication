@@ -2,7 +2,7 @@ download-external-modules: true
 quiet: true
 skip-path: |
   (?x)^(
-      ^modules/external/.*$|
+      .*modules/external/.*|
       ^.terraform/.*$
   )$
 skip-check:
