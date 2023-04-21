@@ -57,20 +57,15 @@ jobs:
         run: |
           python -m venv .venv
           source .venv/bin/activate
-          pip install pre-commit
+          pip install pre-commit checkov
       - name: pre-commit run
         run: |
           source .venv/bin/activate
           if [[ "${{ env.GITHUB_REPOSITORY}}" == "cloudandthings/terraform-aws-template" ]]; then
             export SKIP=no-vanilla-readme
           fi
-          echo ...running developer pre-commit checks...
+          echo ...running pre-commit checks...
           pre-commit run --config .pre-commit-config.yaml --all-files --show-diff-on-failure
-          if [[ -f .github/.pre-commit-config.yaml ]]; then
-            echo ...running remote pre-commit checks...
-            pip install checkov
-            pre-commit run --config .github/.pre-commit-config.yaml --all-files --show-diff-on-failure
-          fi
       - name: cat pre-commit log
         if: failure()
         run: |
