@@ -41,7 +41,7 @@ def terraform_test_search_configuration():
     configuration = [
         c
         for c in configuration
-        if os.path.exists(os.path.join(os.cwd(), c["search_path"]))
+        if os.path.exists(os.path.join(os.getcwd(), c["search_path"]))
     ]
     logging.info("test_search_configuration=%s", configuration)
     # Find all matching test code
