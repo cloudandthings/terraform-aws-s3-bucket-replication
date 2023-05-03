@@ -1,10 +1,5 @@
 provider "aws" {
   region  = "af-south-1"
-  profile = var.profile
-}
-
-provider "aws" {
-  region  = "af-south-1"
   alias   = "afs1"
   profile = var.profile
 }

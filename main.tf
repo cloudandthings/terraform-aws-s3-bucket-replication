@@ -54,7 +54,7 @@ resource "aws_s3_bucket_replication_configuration" "this" {
       priority = rule.key
 
       filter {
-        prefix = rule.value.prefix
+        prefix = rule.value.prefix == null ? "" : rule.value.prefix
       }
       status = "Enabled"
 
@@ -78,13 +78,13 @@ resource "aws_s3_bucket_replication_configuration" "this" {
         account = rule.value.destination_aws_account_id
 
         replication_time {
-          status = rule.value.enable_replication_time_control_and_metrics ? "Enabled" : "Disabled"
+          status = coalesce(rule.value.enable_replication_time_control_and_metrics, false) ? "Enabled" : "Disabled"
           time {
             minutes = 15
           }
         }
         metrics {
-          status = rule.value.enable_replication_time_control_and_metrics ? "Enabled" : "Disabled"
+          status = coalesce(rule.value.enable_replication_time_control_and_metrics, false) ? "Enabled" : "Disabled"
           event_threshold {
             minutes = 15
           }
@@ -101,7 +101,7 @@ resource "aws_s3_bucket_replication_configuration" "this" {
       }
 
       delete_marker_replication {
-        status = rule.value.enable_delete_marker_replication ? "Enabled" : "Disabled"
+        status = coalesce(rule.value.enable_delete_marker_replication, true) ? "Enabled" : "Disabled"
       }
 
     }
