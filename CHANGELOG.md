@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.0](https://github.com/cloudandthings/terraform-aws-s3-bucket-replication/compare/v2.0.0...v2.1.0) (2023-05-05)
+
+
+### Features
+
+* Cross-account example ([#7](https://github.com/cloudandthings/terraform-aws-s3-bucket-replication/issues/7)) ([30bc4bb](https://github.com/cloudandthings/terraform-aws-s3-bucket-replication/commit/30bc4bb1992f85704490ecb14811dc89ba59e4c6))
+
+
+### Bug Fixes
+
+* 2023-05-05-update-conftest ([#10](https://github.com/cloudandthings/terraform-aws-s3-bucket-replication/issues/10)) ([250b48e](https://github.com/cloudandthings/terraform-aws-s3-bucket-replication/commit/250b48e1ada2c983967eda0adf16ed5637078ed9))
+
 ## [2.0.0](https://github.com/cloudandthings/terraform-aws-s3-bucket-replication/compare/v1.0.0...v2.0.0) (2023-03-10)
 
 
