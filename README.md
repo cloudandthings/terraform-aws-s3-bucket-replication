@@ -2,41 +2,36 @@
 
 ## Description
 
-*...example content; edit as needed...*
+Terraform module for enabling S3 replication between two buckets.
 
-Terraform module for...
+Will be used for *HashiTalks: Africa 2023*.
 
 Features:
 
- - Creates an...
+ - Enable S3 replication between buckets
+ - Allow cross-region replication
+ - Allow cross-account replication
+ - Multiple destinations are supported
 
 [AWS documentation](https://docs.aws.amazon.com...)
 
 ----
 ## Prerequisites
 
-*...example content; edit as needed...*
-
-None.
+You will need to create 2 S3 buckets. The examples show possible ways to achieve this.
 
 ----
 ## Usage
-
-*...example content; edit as needed...*
 
 See `examples` dropdown on Terraform Cloud, or [browse here](/examples/).
 
 ----
 ## Testing
 
-*...example content; edit as needed...*
-
 This module is tested during development using [`pytest`](https://docs.pytest.org/en/7.2.x/) and [`tftest`](https://pypi.org/project/tftest/). See the `tests` folder for further details, and in particular the [testing readme](./tests/README.md).
 
 ----
 ## Notes
-
-*...example content; edit as needed...*
 
 *This repo was created from [terraform-aws-template](https://github.com/cloudandthings/terraform-aws-template)*
 
@@ -44,14 +39,10 @@ This module is tested during development using [`pytest`](https://docs.pytest.or
 ----
 ## Known issues
 
-*...example content; edit as needed...*
-
 This project is currently unlicenced. Please contact the maintaining team to add a licence.
 
 ----
 ## Contributing
-
-*...example content; edit as needed...*
 
 Direct contributions are welcome.
 
