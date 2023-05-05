@@ -37,22 +37,22 @@ variable "replication_configuration" {
     destination_bucket_name = string
 
     # S3 bucket prefix to replicate.
-    prefix = optional(string, "")
+    prefix = string # coalesced to ""
 
     # Destination S3 bucket KMS Key ARN if applicable.
-    destination_bucket_kms_key_arn = optional(string, null)
+    destination_bucket_kms_key_arn = string
 
     # Destination AWS Account ID. Only use for cross-account replication. When specified, replica object ownership will be set to this account.
-    destination_aws_account_id = optional(string, null)
+    destination_aws_account_id = string
 
     # Destination S3 bucket region. If unspecified, then the provider region is used.
-    destination_bucket_region = optional(string, null)
+    destination_bucket_region = string
 
     # Whether delete markers are replicated.
-    enable_delete_marker_replication = optional(bool, true)
+    enable_delete_marker_replication = bool # coalesced to true
 
     # Whether to enable S3 Replication Time Control (S3 RTC) and Replication Metrics.
-    enable_replication_time_control_and_metrics = optional(bool, false)
+    enable_replication_time_control_and_metrics = bool # coalesced to false
     })
   )
 }

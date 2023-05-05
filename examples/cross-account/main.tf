@@ -7,8 +7,10 @@ resource "random_integer" "naming" {
   max = 999999
 }
 
+data "aws_caller_identity" "current" {}
+
 locals {
-  naming_prefix = "example-repl-${random_integer.naming.id}"
+  naming_prefix = "example-repl-${random_integer.naming.id}-${data.aws_caller_identity.current.account_id}"
 }
 
 resource "aws_kms_key" "source" {
@@ -17,7 +19,7 @@ resource "aws_kms_key" "source" {
   deletion_window_in_days = 7
   enable_key_rotation     = true
 
-  provider = aws.afs1
+  provider = aws.account_A
 }
 
 module "s3_bucket_source" {
@@ -34,27 +36,16 @@ module "s3_bucket_source" {
   tags = {}
 
   providers = {
-    aws = aws.afs1
+    aws = aws.account_A
   }
 }
 
-resource "aws_kms_key" "destination" {
-  description = "${local.naming_prefix}-dest"
-
-  deletion_window_in_days = 7
-  enable_key_rotation     = true
-
-  provider = aws.afs1
-}
-
-module "s3_bucket_destinations" {
-  count = 2
+module "s3_bucket_destination" {
   # source  = "app.terraform.io/cloudandthings/s3-bucket/aws"
   # version = "1.2.0"
   source = "../../modules/external/s3_bucket"
 
-  name       = "${local.naming_prefix}-dest-${count.index}"
-  kms_key_id = aws_kms_key.destination.arn
+  name = "${local.naming_prefix}-dest"
 
   enable_versioning = true # Required for replication
   force_destroy     = true
@@ -62,16 +53,14 @@ module "s3_bucket_destinations" {
   tags = {}
 
   providers = {
-    aws = aws.afs1
+    aws = aws.account_B
   }
 }
 
 #--------------------------------------------------------------------------------------
 # Example
 #--------------------------------------------------------------------------------------
-
 module "example" {
-
   # Uncomment and update as needed
   # source  = "app.terraform.io/cloudandthings/s3-bucket-replication/aws"
   # version = "~> 1.0"
@@ -83,14 +72,13 @@ module "example" {
   source_bucket_kms_key_arn = aws_kms_key.source.arn
 
   replication_configuration = [
-    for s3_bucket_destination in module.s3_bucket_destinations :
     {
       prefix = null # will replicate entire bucket
 
-      destination_bucket_name        = s3_bucket_destination.bucket
-      destination_bucket_region      = null                        # will use provider region
-      destination_bucket_kms_key_arn = aws_kms_key.destination.arn # can be null if not applicable
-      destination_aws_account_id     = null                        # will use provider account id
+      destination_bucket_name        = module.s3_bucket_destination.bucket
+      destination_bucket_region      = null # will use provider region
+      destination_bucket_kms_key_arn = null
+      destination_aws_account_id     = "000273210632"
 
       enable_delete_marker_replication            = true
       enable_replication_time_control_and_metrics = true
@@ -99,7 +87,10 @@ module "example" {
 
   tags = {}
 
+  providers = {
+    aws = aws.account_A
+  }
   depends_on = [
-    module.s3_bucket_source, module.s3_bucket_destinations
+    module.s3_bucket_source, module.s3_bucket_destination
   ]
 }

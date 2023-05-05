@@ -89,9 +89,14 @@ module "example" {
   replication_configuration = [
     for s3_bucket_destination in module.s3_bucket_destinations :
     {
-      destination_bucket_name        = s3_bucket_destination.bucket
-      destination_bucket_kms_key_arn = aws_kms_key.destination.arn
+      prefix = null # will replicate entire bucket
 
+      destination_bucket_name        = s3_bucket_destination.bucket
+      destination_bucket_region      = null                        # will use provider region
+      destination_bucket_kms_key_arn = aws_kms_key.destination.arn # can be null if not applicable
+      destination_aws_account_id     = null                        # will use provider account id
+
+      enable_delete_marker_replication            = true
       enable_replication_time_control_and_metrics = true
     }
   ]

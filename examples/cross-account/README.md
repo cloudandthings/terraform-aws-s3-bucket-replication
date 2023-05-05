@@ -11,8 +11,10 @@ resource "random_integer" "naming" {
   max = 999999
 }
 
+data "aws_caller_identity" "current" {}
+
 locals {
-  naming_prefix = "example-repl-${random_integer.naming.id}"
+  naming_prefix = "example-repl-${random_integer.naming.id}-${data.aws_caller_identity.current.account_id}"
 }
 
 resource "aws_kms_key" "source" {
@@ -21,7 +23,7 @@ resource "aws_kms_key" "source" {
   deletion_window_in_days = 7
   enable_key_rotation     = true
 
-  provider = aws.afs1
+  provider = aws.account_A
 }
 
 module "s3_bucket_source" {
@@ -38,17 +40,8 @@ module "s3_bucket_source" {
   tags = {}
 
   providers = {
-    aws = aws.afs1
+    aws = aws.account_A
   }
-}
-
-resource "aws_kms_key" "destination" {
-  description = "${local.naming_prefix}-dest"
-
-  deletion_window_in_days = 7
-  enable_key_rotation     = true
-
-  provider = aws.afs1
 }
 
 module "s3_bucket_destination" {
@@ -56,8 +49,7 @@ module "s3_bucket_destination" {
   # version = "1.2.0"
   source = "../../modules/external/s3_bucket"
 
-  name       = "${local.naming_prefix}-dest"
-  kms_key_id = aws_kms_key.destination.arn
+  name = "${local.naming_prefix}-dest"
 
   enable_versioning = true # Required for replication
   force_destroy     = true
@@ -65,14 +57,13 @@ module "s3_bucket_destination" {
   tags = {}
 
   providers = {
-    aws = aws.afs1
+    aws = aws.account_B
   }
 }
 
 #--------------------------------------------------------------------------------------
 # Example
 #--------------------------------------------------------------------------------------
-
 module "example" {
   # Uncomment and update as needed
   # source  = "app.terraform.io/cloudandthings/s3-bucket-replication/aws"
@@ -89,9 +80,9 @@ module "example" {
       prefix = null # will replicate entire bucket
 
       destination_bucket_name        = module.s3_bucket_destination.bucket
-      destination_bucket_region      = null                        # will use provider region
-      destination_bucket_kms_key_arn = aws_kms_key.destination.arn # can be null if not applicable
-      destination_aws_account_id     = null                        # will use provider account id
+      destination_bucket_region      = null # will use provider region
+      destination_bucket_kms_key_arn = null
+      destination_aws_account_id     = "000273210632"
 
       enable_delete_marker_replication            = true
       enable_replication_time_control_and_metrics = true
@@ -100,12 +91,12 @@ module "example" {
 
   tags = {}
 
+  providers = {
+    aws = aws.account_A
+  }
   depends_on = [
     module.s3_bucket_source, module.s3_bucket_destination
   ]
-  providers = {
-    aws = aws.afs1
-  }
 }
 ```
 ----
@@ -142,7 +133,8 @@ module "example" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws.afs1"></a> [aws.afs1](#provider\_aws.afs1) | ~> 4.9 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 4.9 |
+| <a name="provider_aws.account_A"></a> [aws.account\_A](#provider\_aws.account\_A) | ~> 4.9 |
 | <a name="provider_random"></a> [random](#provider\_random) | ~> 3.4 |
 
 ----
@@ -159,9 +151,9 @@ module "example" {
 
 | Name | Type |
 |------|------|
-| [aws_kms_key.destination](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
 | [aws_kms_key.source](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
 | [random_integer.naming](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) | resource |
+| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 
 ----
 <!-- END_TF_DOCS -->
