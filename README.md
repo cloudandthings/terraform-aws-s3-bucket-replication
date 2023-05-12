@@ -1,4 +1,4 @@
-# Terraform AWS Template
+# terraform-aws-s3-bucket-replication
 
 ## Description
 
