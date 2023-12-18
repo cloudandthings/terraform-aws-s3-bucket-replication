@@ -47,6 +47,13 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           pip install pre-commit checkov
+      - name: Configure ~/.terraformrc
+        run: |
+          cat <<-EOF >> ~/.terraformrc
+            credentials "app.terraform.io" {
+              token = "${{ secrets.TERRAFORM_CLOUD_TOKEN }}"
+            }
+          EOF
       - name: pre-commit run
         run: |
           source .venv/bin/activate
