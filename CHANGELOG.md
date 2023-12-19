@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/cloudandthings/terraform-aws-s3-bucket-replication/compare/v2.1.0...v3.0.0) (2023-12-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* Bump AWS provider ([#11](https://github.com/cloudandthings/terraform-aws-s3-bucket-replication/issues/11))
+
+### Bug Fixes
+
+* Bump AWS provider ([#11](https://github.com/cloudandthings/terraform-aws-s3-bucket-replication/issues/11)) ([417599d](https://github.com/cloudandthings/terraform-aws-s3-bucket-replication/commit/417599d031d85c2f681fdb22ed2a349d2126a5c6))
+
 ## [2.1.0](https://github.com/cloudandthings/terraform-aws-s3-bucket-replication/compare/v2.0.0...v2.1.0) (2023-05-05)
 
 
