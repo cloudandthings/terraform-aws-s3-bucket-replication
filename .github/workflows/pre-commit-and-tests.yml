@@ -98,6 +98,13 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           pip install -r tests/requirements.txt
+      - name: Configure ~/.terraformrc
+        run: |
+          cat <<-EOF >> ~/.terraformrc
+            credentials "app.terraform.io" {
+              token = "${{ secrets.TERRAFORM_CLOUD_TOKEN }}"
+            }
+          EOF
       - name: Run
         run: |
           source .venv/bin/activate
