@@ -2,9 +2,8 @@ terraform {
   required_version = ">= 0.15.5"
   required_providers {
     aws = {
-      source = "hashicorp/aws"
-      # V5+ does not exist yet, may contain breaking changes.
-      version = "~> 4.9"
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
     }
     random = {
       source  = "hashicorp/random"

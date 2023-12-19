@@ -25,9 +25,8 @@ resource "aws_kms_key" "source" {
 }
 
 module "s3_bucket_source" {
-  # source  = "app.terraform.io/cloudandthings/s3-bucket/aws"
-  # version = "1.2.0"
-  source = "../../modules/external/s3_bucket"
+  source  = "app.terraform.io/cloudandthings/s3-bucket/aws"
+  version = "2.0.0"
 
   name       = "${local.naming_prefix}-source"
   kms_key_id = aws_kms_key.source.arn
@@ -52,9 +51,8 @@ resource "aws_kms_key" "destination" {
 }
 
 module "s3_bucket_destination" {
-  # source  = "app.terraform.io/cloudandthings/s3-bucket/aws"
-  # version = "1.2.0"
-  source = "../../modules/external/s3_bucket"
+  source  = "app.terraform.io/cloudandthings/s3-bucket/aws"
+  version = "2.0.0"
 
   name       = "${local.naming_prefix}-dest"
   kms_key_id = aws_kms_key.destination.arn
@@ -125,8 +123,8 @@ module "example" {
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_example"></a> [example](#module\_example) | ../../ | n/a |
-| <a name="module_s3_bucket_destination"></a> [s3\_bucket\_destination](#module\_s3\_bucket\_destination) | ../../modules/external/s3_bucket | n/a |
-| <a name="module_s3_bucket_source"></a> [s3\_bucket\_source](#module\_s3\_bucket\_source) | ../../modules/external/s3_bucket | n/a |
+| <a name="module_s3_bucket_destination"></a> [s3\_bucket\_destination](#module\_s3\_bucket\_destination) | app.terraform.io/cloudandthings/s3-bucket/aws | 2.0.0 |
+| <a name="module_s3_bucket_source"></a> [s3\_bucket\_source](#module\_s3\_bucket\_source) | app.terraform.io/cloudandthings/s3-bucket/aws | 2.0.0 |
 
 ----
 ### Outputs
@@ -142,7 +140,7 @@ module "example" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws.afs1"></a> [aws.afs1](#provider\_aws.afs1) | ~> 4.9 |
+| <a name="provider_aws.afs1"></a> [aws.afs1](#provider\_aws.afs1) | ~> 5.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | ~> 3.4 |
 
 ----
@@ -151,7 +149,7 @@ module "example" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.15.5 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.9 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.4 |
 
 ----

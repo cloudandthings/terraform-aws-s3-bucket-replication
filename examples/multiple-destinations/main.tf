@@ -21,9 +21,8 @@ resource "aws_kms_key" "source" {
 }
 
 module "s3_bucket_source" {
-  # source  = "app.terraform.io/cloudandthings/s3-bucket/aws"
-  # version = "1.2.0"
-  source = "../../modules/external/s3_bucket"
+  source  = "app.terraform.io/cloudandthings/s3-bucket/aws"
+  version = "2.0.0"
 
   name       = "${local.naming_prefix}-source"
   kms_key_id = aws_kms_key.source.arn
@@ -48,10 +47,10 @@ resource "aws_kms_key" "destination" {
 }
 
 module "s3_bucket_destinations" {
+  source  = "app.terraform.io/cloudandthings/s3-bucket/aws"
+  version = "2.0.0"
+
   count = 2
-  # source  = "app.terraform.io/cloudandthings/s3-bucket/aws"
-  # version = "1.2.0"
-  source = "../../modules/external/s3_bucket"
 
   name       = "${local.naming_prefix}-dest-${count.index}"
   kms_key_id = aws_kms_key.destination.arn
