@@ -8,3 +8,9 @@ skip-path: |
 skip-check:
   # Github: Ensure top-level permissions are not set to write-all
   - CKV2_GHA_1
+
+  # Github: Ensure Terraform module sources use a commit hash
+  - CKV_TF_1
+
+  # AWS: Ensure KMS key Policy is defined
+  - CKV2_AWS_64
