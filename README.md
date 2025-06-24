@@ -65,7 +65,7 @@ See [`CONTRIBUTING.md`](./.github/CONTRIBUTING.md) for further information.
 | <a name="input_source_bucket_kms_key_arn"></a> [source\_bucket\_kms\_key\_arn](#input\_source\_bucket\_kms\_key\_arn) | Source S3 bucket KMS Key ARN | `string` | `null` | no |
 | <a name="input_source_bucket_name"></a> [source\_bucket\_name](#input\_source\_bucket\_name) | Source S3 bucket name | `string` | n/a | yes |
 | <a name="input_source_bucket_region"></a> [source\_bucket\_region](#input\_source\_bucket\_region) | Source S3 bucket region. If unspecified, then the provider region is used. | `string` | `null` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | Map of additional tags to assign to created resources. If configured with a provider `default_tags` configuration block present, tags with matching keys will overwrite those defined at the provider-level. | `map(string)` | n/a | yes |
+| <a name="input_tags"></a> [tags](#input\_tags) | Map of additional tags to assign to created resources. If configured with a provider `default_tags` configuration block present, tags with matching keys will overwrite those defined at the provider-level. | `map(string)` | `{}` | no |
 
 ----
 ### Modules

@@ -25,7 +25,7 @@ resource "aws_kms_key" "source" {
 }
 
 module "s3_bucket_source" {
-  source  = "app.terraform.io/cloudandthings/s3-bucket/aws"
+  source  = "cloudandthings/s3-bucket/aws"
   version = "2.0.0"
 
   name       = "${local.naming_prefix}-afs1-source"
@@ -51,7 +51,7 @@ resource "aws_kms_key" "destination" {
 }
 
 module "s3_bucket_destination" {
-  source  = "app.terraform.io/cloudandthings/s3-bucket/aws"
+  source  = "cloudandthings/s3-bucket/aws"
   version = "2.0.0"
 
   name       = "${local.naming_prefix}-euw1-dest"
@@ -72,8 +72,8 @@ module "s3_bucket_destination" {
 #--------------------------------------------------------------------------------------
 module "example" {
   # Uncomment and update as needed
-  # source  = "app.terraform.io/cloudandthings/s3-bucket-replication/aws"
-  # version = "~> 1.0"
+  # source  = "cloudandthings/s3-bucket-replication/aws"
+  # version = "~> 3.0"
   source = "../../"
 
   name_for_created_iam_resources = local.naming_prefix
@@ -119,8 +119,8 @@ module "example" {
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_example"></a> [example](#module\_example) | ../../ | n/a |
-| <a name="module_s3_bucket_destination"></a> [s3\_bucket\_destination](#module\_s3\_bucket\_destination) | app.terraform.io/cloudandthings/s3-bucket/aws | 2.0.0 |
-| <a name="module_s3_bucket_source"></a> [s3\_bucket\_source](#module\_s3\_bucket\_source) | app.terraform.io/cloudandthings/s3-bucket/aws | 2.0.0 |
+| <a name="module_s3_bucket_destination"></a> [s3\_bucket\_destination](#module\_s3\_bucket\_destination) | cloudandthings/s3-bucket/aws | 2.0.0 |
+| <a name="module_s3_bucket_source"></a> [s3\_bucket\_source](#module\_s3\_bucket\_source) | cloudandthings/s3-bucket/aws | 2.0.0 |
 
 ----
 ### Outputs
