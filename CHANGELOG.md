@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/cloudandthings/terraform-aws-s3-bucket-replication/compare/v3.0.0...v3.0.1) (2025-06-24)
+
+
+### Bug Fixes
+
+* Make tags an optional variable ([#13](https://github.com/cloudandthings/terraform-aws-s3-bucket-replication/issues/13)) ([de350bf](https://github.com/cloudandthings/terraform-aws-s3-bucket-replication/commit/de350bfa89cd0171270af7d6a6aec600f8ff0ce1))
+
 ## [3.0.0](https://github.com/cloudandthings/terraform-aws-s3-bucket-replication/compare/v2.1.0...v3.0.0) (2023-12-19)
 
 
