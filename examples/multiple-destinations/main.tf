@@ -21,7 +21,7 @@ resource "aws_kms_key" "source" {
 }
 
 module "s3_bucket_source" {
-  source  = "app.terraform.io/cloudandthings/s3-bucket/aws"
+  source  = "cloudandthings/s3-bucket/aws"
   version = "2.0.0"
 
   name       = "${local.naming_prefix}-source"
@@ -47,7 +47,7 @@ resource "aws_kms_key" "destination" {
 }
 
 module "s3_bucket_destinations" {
-  source  = "app.terraform.io/cloudandthings/s3-bucket/aws"
+  source  = "cloudandthings/s3-bucket/aws"
   version = "2.0.0"
 
   count = 2
@@ -72,8 +72,8 @@ module "s3_bucket_destinations" {
 module "example" {
 
   # Uncomment and update as needed
-  # source  = "app.terraform.io/cloudandthings/s3-bucket-replication/aws"
-  # version = "~> 1.0"
+  # source  = "cloudandthings/s3-bucket-replication/aws"
+  # version = "~> 3.0"
   source = "../../"
 
   name_for_created_iam_resources = local.naming_prefix
