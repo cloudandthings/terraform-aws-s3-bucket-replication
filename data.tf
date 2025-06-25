@@ -4,6 +4,15 @@
 data "aws_region" "current" {}
 
 #--------------------------------------------------------------------------------------
+# Maps
+#--------------------------------------------------------------------------------------
+locals {
+  distinct_destination_bucket_names = distinct([
+    for c in var.replication_configuration : c.destination_bucket_name
+  ])
+}
+
+#--------------------------------------------------------------------------------------
 # Replication role policy documents
 #--------------------------------------------------------------------------------------
 data "aws_iam_policy_document" "replication_role_assume_role_policy" {
@@ -30,8 +39,8 @@ data "aws_iam_policy_document" "replication_role_policy_document" {
     resources = concat(
       [local.source_bucket_arn],
       ["${local.source_bucket_arn}/*"],
-      [for c in var.replication_configuration : "arn:aws:s3:::${c.destination_bucket_name}"],
-      [for c in var.replication_configuration : "arn:aws:s3:::${c.destination_bucket_name}/*"]
+      [for x in local.distinct_destination_bucket_names : "arn:aws:s3:::${x}"],
+      [for x in local.distinct_destination_bucket_names : "arn:aws:s3:::${x}/*"]
     )
   }
 
@@ -44,15 +53,15 @@ data "aws_iam_policy_document" "replication_role_policy_document" {
     ]
     resources = concat(
       ["${local.source_bucket_arn}/*"],
-      [for c in var.replication_configuration : "arn:aws:s3:::${c.destination_bucket_name}/*"],
+      [for x in local.distinct_destination_bucket_names : "arn:aws:s3:::${x}/*"],
     )
   }
 
   dynamic "statement" {
-    for_each = toset(var.replication_configuration)
+    for_each = local.distinct_destination_bucket_names
     content {
       actions   = ["s3:ObjectOwnerOverrideToBucketOwner"]
-      resources = ["arn:aws:s3:::${statement.value.destination_bucket_name}/*"]
+      resources = ["arn:aws:s3:::${statement.value}/*"]
     }
   }
 
@@ -80,10 +89,10 @@ data "aws_iam_policy_document" "replication_role_policy_document" {
   }
 
   dynamic "statement" {
-    for_each = toset([
+    for_each = [
       for c in toset(var.replication_configuration) :
       c if c.destination_bucket_kms_key_arn != null
-    ])
+    ]
 
     content {
       actions   = ["kms:Encrypt"]

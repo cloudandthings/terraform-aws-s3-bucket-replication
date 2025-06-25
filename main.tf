@@ -44,10 +44,7 @@ resource "aws_s3_bucket_replication_configuration" "this" {
   bucket = var.source_bucket_name
 
   dynamic "rule" {
-    for_each = {
-      for c in var.replication_configuration :
-      index(var.replication_configuration, c) => c
-    }
+    for_each = var.replication_configuration
 
     content {
       id       = "rule-${rule.key}"
