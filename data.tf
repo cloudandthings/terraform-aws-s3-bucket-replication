@@ -90,7 +90,7 @@ data "aws_iam_policy_document" "replication_role_policy_document" {
 
   dynamic "statement" {
     for_each = [
-      for c in toset(var.replication_configuration) :
+      for c in var.replication_configuration :
       c if c.destination_bucket_kms_key_arn != null
     ]
 
