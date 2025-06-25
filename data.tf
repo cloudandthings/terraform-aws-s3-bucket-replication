@@ -96,9 +96,9 @@ data "aws_iam_policy_document" "replication_role_policy_document" {
 
   dynamic "statement" {
     for_each = {
-      for idx, c in local.replication_configuration_unordered :
-      idx => c
-      if c.destination_bucket_kms_key_arn != null
+      for k, v in local.replication_configuration_unordered :
+      k => v
+      if v.destination_bucket_kms_key_arn != null
     }
 
     content {
