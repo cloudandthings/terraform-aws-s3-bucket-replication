@@ -4,12 +4,18 @@
 data "aws_region" "current" {}
 
 #--------------------------------------------------------------------------------------
-# Maps
+# Locals
 #--------------------------------------------------------------------------------------
+
+# In Terraform, order is not preserved in maps.
+# This is fine for some resources eg IAM policies.
+# However for replication rule priority, maps cannot be used.
+
 locals {
-  distinct_destination_bucket_names = distinct([
-    for c in var.replication_configuration : c.destination_bucket_name
-  ])
+  replication_configuration_unordered = {
+    for ixd, c in var.replication_configuration
+    : idx => c
+  }
 }
 
 #--------------------------------------------------------------------------------------
@@ -39,8 +45,8 @@ data "aws_iam_policy_document" "replication_role_policy_document" {
     resources = concat(
       [local.source_bucket_arn],
       ["${local.source_bucket_arn}/*"],
-      [for x in local.distinct_destination_bucket_names : "arn:aws:s3:::${x}"],
-      [for x in local.distinct_destination_bucket_names : "arn:aws:s3:::${x}/*"]
+      [for c in local.replication_configuration_unordered : "arn:aws:s3:::${c.destination_bucket_name}"],
+      [for c in local.replication_configuration_unordered : "arn:aws:s3:::${c.destination_bucket_name}/*"]
     )
   }
 
@@ -53,15 +59,15 @@ data "aws_iam_policy_document" "replication_role_policy_document" {
     ]
     resources = concat(
       ["${local.source_bucket_arn}/*"],
-      [for x in local.distinct_destination_bucket_names : "arn:aws:s3:::${x}/*"],
+      [for c in local.replication_configuration_unordered : "arn:aws:s3:::${c.destination_bucket_name}/*"],
     )
   }
 
   dynamic "statement" {
-    for_each = local.distinct_destination_bucket_names
+    for_each = local.replication_configuration_unordered
     content {
       actions   = ["s3:ObjectOwnerOverrideToBucketOwner"]
-      resources = ["arn:aws:s3:::${statement.value}/*"]
+      resources = ["arn:aws:s3:::${statement.value.destination_bucket_name}/*"]
     }
   }
 
@@ -89,10 +95,11 @@ data "aws_iam_policy_document" "replication_role_policy_document" {
   }
 
   dynamic "statement" {
-    for_each = [
-      for c in var.replication_configuration :
-      c if c.destination_bucket_kms_key_arn != null
-    ]
+    for_each = {
+      for idx, c in local.replication_configuration_unordered :
+      idx => c
+      if c.destination_bucket_kms_key_arn != null
+    }
 
     content {
       actions   = ["kms:Encrypt"]

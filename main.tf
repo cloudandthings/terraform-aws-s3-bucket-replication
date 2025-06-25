@@ -44,6 +44,9 @@ resource "aws_s3_bucket_replication_configuration" "this" {
   bucket = var.source_bucket_name
 
   dynamic "rule" {
+    # In Terraform, order is not preserved in maps.
+    # This is fine for some resources eg IAM policies.
+    # However for replication rule priority, maps cannot be used.
     for_each = var.replication_configuration
 
     content {

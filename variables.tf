@@ -32,6 +32,9 @@ variable "source_bucket_region" {
 
 variable "replication_configuration" {
   description = "Replication configuration, in priority order. See the comments in `variables.tf` for usage."
+
+  # In Terraform, order is not preserved in maps.
+  # To maintain priority order, use a list of objects instead of a map.
   type = list(object({
 
     destination_bucket_name = string
