@@ -1,6 +1,9 @@
 # Local .terraform directories
 **/.terraform/*
 
+# Checkov external modules
+**/.external_modules/*
+
 # .tfstate files
 *.tfstate
 *.tfstate.*
