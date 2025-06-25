@@ -13,7 +13,7 @@ data "aws_region" "current" {}
 
 locals {
   replication_configuration_unordered = {
-    for ixd, c in var.replication_configuration
+    for idx, c in var.replication_configuration
     : idx => c
   }
 }
